@@ -2,7 +2,7 @@ import logging, os
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils import executor
 
-API_TOKEN = os.getenv("API_TOKEN")
+API_TOKEN = os.getenv("TOKEN")  # <-- имя переменной должно совпадать с Render: TOKEN
 logging.basicConfig(level=logging.INFO)
 
 bot = Bot(token=API_TOKEN)
@@ -53,5 +53,5 @@ async def brands(m: types.Message):
 async def fallback(m: types.Message):
     await m.reply("🤖 Напишите бренд, 'рассрочка' или 'ремонт'.")
 
-if name == "__main__":
+if name == "__main__":  # <-- вот здесь было неправильно
     executor.start_polling(dp, skip_updates=True)
