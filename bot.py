@@ -1,53 +1,69 @@
-import os
-from telegram import Update
-from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
+import telebot
+from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-TOKEN = os.getenv("API_TOKEN")
+TOKEN = '6339993059:AAH-fUrMpwps4UucVRrJpByL96zYj4RLd1s' 
 
-price_posts = {
-    "айфон": 17,
-    "iphone": 17,
-    "apple": 17,
-    "samsung": 3,
-    "планшет": 15
+bot = telebot.TeleBot(TOKEN)
+
+# Ключевые слова и ссылки на прайсы
+PRICE_LINKS = {
+    "iphone": (" Apple (новые)", "https://t.me/Kosmoscaseprice/17"),
+    "apple": (" Б/У Apple и другие", "https://t.me/Kosmoscaseprice/18"),
+    "samsung": ("💙 Samsung", "https://t.me/Kosmoscaseprice/3"),
+    "pixel": ("🤍 Google Pixel", "https://t.me/Kosmoscaseprice/14"),
+    "xiaomi": ("🧡 Xiaomi", "https://t.me/Kosmoscaseprice/4"),
+    "poco": ("💛 Poco", "https://t.me/Kosmoscaseprice/5"),
+    "tecno": ("💙 Tecno", "https://t.me/Kosmoscaseprice/11"),
+    "infinix": ("💚 Infinix", "https://t.me/Kosmoscaseprice/8"),
+    "realme": ("💛 Realme", "https://t.me/Kosmoscaseprice/12"),
+    "honor": ("💙 Honor / Huawei", "https://t.me/Kosmoscaseprice/13"),
+    "ноутбук": ("💻 Ноутбуки", "https://t.me/Kosmoscaseprice/19"),
+    "планшет": ("📋 Планшеты", "https://t.me/Kosmoscaseprice/15"),
+    "акустика": ("🎧 Акустика", "https://t.me/Kosmoscaseprice/28"),
+    "часы": ("⌚️ Смарт часы", "https://t.me/Kosmoscaseprice/49"),
+    "приставка": ("🎮 Консоли", "https://t.me/Kosmoscaseprice/32"),
+    "телевизор": ("📺 ТВ, проекторы", "https://t.me/Kosmoscaseprice/53")
 }
 
-repair_keywords = [
-    "сломал", "разбил", "треснул", "не включается", "не работает",
-    "экран", "не заряжается", "разбит", "вода", "утопил", "уронил", "не реагирует"
-]
+# Специальные ответы
+SPECIAL = {
+    "рассрочка": "📄 Условия рассрочки тут:\nhttps://t.me/kosmoscase/1407",
+    "адрес": "🚀 Наш адрес:\nг. Кукмор, ул. Ленина 24к2\n\n🕘 Будни: 9:00–18:00\n🕓 Выходные и праздники: 9:00–16:00",
+    "режим работы": "🚀 Наш адрес:\nг. Кукмор, ул. Ленина 24к2\n\n🕘 Будни: 9:00–18:00\n🕓 Выходные и праздники: 9:00–16:00"
+}
 
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text.lower()
+# Ключевые слова для ремонта
+REPAIR_KEYWORDS = ["ремонт", "сломался", "не включается", "разбил", "экран", "треснул", "уронил"]
 
-    # 1. Ответ по фразам ремонта
-    if any(word in text for word in repair_keywords):
-        await update.message.reply_text(
-            "🔧 Похоже, у Вас проблема с устройством.\n"
-            "Пожалуйста, укажите модель и суть проблемы.\n"
-            "Для консультации напишите нашему менеджеру: https://t.me/kosmoscas"
+@bot.message_handler(func=lambda m: True)
+def handle_message(message):
+    text = message.text.lower()
+
+    # Проверка на спецкоманды
+    for key in SPECIAL:
+        if key in text:
+            bot.send_message(message.chat.id, SPECIAL[key])
+            return
+
+    # Проверка на ремонт
+    if any(word in text for word in REPAIR_KEYWORDS):
+        bot.send_message(
+            message.chat.id,
+            "🔧 По вопросам ремонта лучше всего написать нашему менеджеру: @kosmoscas\n\n📱 Пожалуйста, укажите модель устройства и опишите проблему 🙏"
         )
         return
 
-    # 2. Ответ с пересылкой прайса
-    for key, msg_id in price_posts.items():
-        if key in text:
-            await context.bot.copy_message(
-                chat_id=update.effective_chat.id,
-                from_chat_id='@Kosmoscaseprice',
-                message_id=msg_id
-            )
+    # Проверка по брендам/категориям
+    for keyword, (title, link) in PRICE_LINKS.items():
+        if keyword in text:
+            markup = InlineKeyboardMarkup()
+            btn = InlineKeyboardButton(text="🔍 Открыть прайс", url=link)
+            markup.add(btn)
+            bot.send_message(message.chat.id, f"{title} доступен по кнопке ниже 👇", reply_markup=markup)
             return
 
-    # 3. Ответ по рассрочке
-    if "рассрочка" in text:
-        await update.message.reply_text("💳 Рассрочка от 6 до 36 месяцев:\nhttps://t.me/kosmoscase/1407")
-        return
+    # Если ничего не найдено
+    bot.send_message(message.chat.id, "🤖 Не совсем понял запрос. Уточните модель или напишите: 'iPhone', 'Samsung', 'рассрочка', 'ремонт' и т.п.")
 
-    # 4. Ответ по умолчанию
-    await update.message.reply_text("🤖 Напишите интересующий бренд, 'рассрочка' или опишите проблему устройства.")
-
-if __name__ == "__main__":
-    app = ApplicationBuilder().token(TOKEN).build()
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-    app.run_polling()
+# Запуск бота
+bot.infinity_polling()
