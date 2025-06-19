@@ -8,22 +8,54 @@ bot = telebot.TeleBot(TOKEN)
 PRICE_LINKS = {
     "iphone": (" Apple (новые)", "https://t.me/Kosmoscaseprice/17"),
     "айфон": (" Apple (новые)", "https://t.me/Kosmoscaseprice/17"),
+    "новый айфон": (" Apple (новые)", "https://t.me/Kosmoscaseprice/17"),
+    "айфон новый": (" Apple (новые)", "https://t.me/Kosmoscaseprice/17"),
+    "новый эпл": (" Apple (новые)", "https://t.me/Kosmoscaseprice/17"),
     "б/у айфон": ("БУ устройства 📱💻⌚️", "https://t.me/Kosmoscaseprice/18"),
     "айфон бу": ("БУ устройства 📱💻⌚️", "https://t.me/Kosmoscaseprice/18"),
+    "айфон б/у": ("БУ устройства 📱💻⌚️", "https://t.me/Kosmoscaseprice/18"),
+    "бушный айфон": ("БУ устройства 📱💻⌚️", "https://t.me/Kosmoscaseprice/18"),
+    "подержанный айфон": ("БУ устройства 📱💻⌚️", "https://t.me/Kosmoscaseprice/18"),
+    "б/у эпл": ("БУ устройства 📱💻⌚️", "https://t.me/Kosmoscaseprice/18"),
+    "apple": ("БУ устройства 📱💻⌚️", "https://t.me/Kosmoscaseprice/18"),
+    "эпл": ("БУ устройства 📱💻⌚️", "https://t.me/Kosmoscaseprice/18"),
     "samsung": ("Samsung 💙", "https://t.me/Kosmoscaseprice/3"),
+    "самсунг": ("Samsung 💙", "https://t.me/Kosmoscaseprice/3"),
     "pixel": ("Google Pixel 🤍", "https://t.me/Kosmoscaseprice/14"),
+    "пиксель": ("Google Pixel 🤍", "https://t.me/Kosmoscaseprice/14"),
     "xiaomi": ("Xiaomi 🧡", "https://t.me/Kosmoscaseprice/4"),
+    "сяоми": ("Xiaomi 🧡", "https://t.me/Kosmoscaseprice/4"),
     "poco": ("Poco 💛", "https://t.me/Kosmoscaseprice/5"),
+    "поко": ("Poco 💛", "https://t.me/Kosmoscaseprice/5"),
     "tecno": ("Tecno 💙", "https://t.me/Kosmoscaseprice/11"),
+    "текно": ("Tecno 💙", "https://t.me/Kosmoscaseprice/11"),
     "infinix": ("Infinix 💚", "https://t.me/Kosmoscaseprice/8"),
+    "инфиникс": ("Infinix 💚", "https://t.me/Kosmoscaseprice/8"),
     "realme": ("Realme 💛", "https://t.me/Kosmoscaseprice/12"),
+    "риалми": ("Realme 💛", "https://t.me/Kosmoscaseprice/12"),
     "honor": ("Honor / Huawei 🩵", "https://t.me/Kosmoscaseprice/13"),
+    "huawei": ("Honor / Huawei 🩵", "https://t.me/Kosmoscaseprice/13"),
+    "хонор": ("Honor / Huawei 🩵", "https://t.me/Kosmoscaseprice/13"),
+    "хуавей": ("Honor / Huawei 🩵", "https://t.me/Kosmoscaseprice/13"),
     "ноутбук": ("Ноутбуки 💻", "https://t.me/Kosmoscaseprice/19"),
+    "ноутбуки": ("Ноутбуки 💻", "https://t.me/Kosmoscaseprice/19"),
     "планшет": ("Планшеты 🎛️", "https://t.me/Kosmoscaseprice/15"),
+    "планшеты": ("Планшеты 🎛️", "https://t.me/Kosmoscaseprice/15"),
     "акустика": ("Акустика 🎧🔊", "https://t.me/Kosmoscaseprice/28"),
+    "колонка": ("Акустика 🎧🔊", "https://t.me/Kosmoscaseprice/28"),
+    "наушники": ("Акустика 🎧🔊", "https://t.me/Kosmoscaseprice/28"),
+    "алиса": ("Акустика 🎧🔊", "https://t.me/Kosmoscaseprice/28"),
+    "яндекс": ("Акустика 🎧🔊", "https://t.me/Kosmoscaseprice/28"),
+    "умная колонка": ("Акустика 🎧🔊", "https://t.me/Kosmoscaseprice/28"),
+    "станция": ("Акустика 🎧🔊", "https://t.me/Kosmoscaseprice/28"),
+    "с алисой": ("Акустика 🎧🔊", "https://t.me/Kosmoscaseprice/28"),
     "часы": ("Смарт часы ⌚️", "https://t.me/Kosmoscaseprice/49"),
+    "умные часы": ("Смарт часы ⌚️", "https://t.me/Kosmoscaseprice/49"),
+    "смарт часы": ("Смарт часы ⌚️", "https://t.me/Kosmoscaseprice/49"),
     "приставка": ("Игровые консоли 🎮", "https://t.me/Kosmoscaseprice/32"),
-    "телевизор": ("ТВ 📺, проекторы 📽️ , 🤖ТВ", "https://t.me/Kosmoscaseprice/53")
+    "консоль": ("Игровые консоли 🎮", "https://t.me/Kosmoscaseprice/32"),
+    "телевизор": ("ТВ 📺, проекторы 📽️ , 🤖ТВ", "https://t.me/Kosmoscaseprice/53"),
+    "тв": ("ТВ 📺, проекторы 📽️ , 🤖ТВ", "https://t.me/Kosmoscaseprice/53")
 }
 
 SPECIAL = {
@@ -45,8 +77,7 @@ def start_message(message):
     )
     bot.send_message(
         message.chat.id,
-        "Привет 👋 Я *КосмоБот* — помогу с техникой и аксессуарами! 🚀\n\n"
-        "Выбирай, что интересует:",
+        "Привет 👋 Я *КосмоБот* — помогу с техникой и аксессуарами! 🚀\n\nВыбирай, что интересует:",
         parse_mode="Markdown",
         reply_markup=markup
     )
@@ -77,8 +108,7 @@ def handle_message(message):
             return
 
     if any(word in text for word in REPAIR_KEYWORDS):
-        bot.send_message(
-            message.chat.id,
+        bot.send_message(message.chat.id,
             "🔧 По вопросам ремонта лучше всего написать нашему менеджеру: @kosmoscas\n\n📱 Пожалуйста, укажите модель устройства и опишите проблему 🙏"
         )
         return
@@ -88,11 +118,7 @@ def handle_message(message):
             markup = InlineKeyboardMarkup()
             btn = InlineKeyboardButton(text=title, url=link)
             markup.add(btn)
-            bot.send_message(
-                message.chat.id,
-                "📦 Наличие и цены по кнопке ниже 👇",
-                reply_markup=markup
-            )
+            bot.send_message(message.chat.id, "📦 Наличие и цены по кнопке ниже 👇", reply_markup=markup)
             return
 
     bot.send_message(message.chat.id, "🤖 Не совсем понял запрос. Напиши, например: iPhone, Poco, ремонт, рассрочка и т.п.")
