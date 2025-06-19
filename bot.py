@@ -1,7 +1,24 @@
 import os
+import threading
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+# 👇 Фейковый сервер, чтобы Render "успокоился"
+class KeepAliveHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b'Bot is running')
+
+def run_fake_server():
+    server = HTTPServer(('0.0.0.0', 10000), KeepAliveHandler)
+    server.serve_forever()
+
+threading.Thread(target=run_fake_server, daemon=True).start()
+
+# 🔐 Бот
 TOKEN = os.getenv("API_TOKEN")
 
 brand_links = {
@@ -35,7 +52,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if "рассрочка" in text:
         await update.message.reply_text("💳 Рассрочка от 6 до 36 месяцев:\nhttps://t.me/kosmoscase/1407")
     elif "ремонт" in text:
-        await update.message.reply_text("🔧 Напишите модель устройства и проблему.\nДля консультации: https://t.me/kosmoscas")
+        await update.message.reply_text("🔧 Укажите модель и проблему:\nhttps://t.me/kosmoscas")
     else:
         for key, link in brand_links.items():
             if key in text:
@@ -43,7 +60,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 return
         await update.message.reply_text("🤖 Напишите бренд, 'рассрочка' или 'ремонт'.")
 
-if __name__ == "__main__":
+if name == "__main__":
     app = ApplicationBuilder().token(TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     app.run_polling()
