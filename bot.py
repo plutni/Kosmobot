@@ -1,4 +1,4 @@
-mport os
+import os
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
@@ -33,9 +33,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text.lower()
 
     if "рассрочка" in text:
-        await update.message.reply_text("Рассрочка от 6 до 36 месяцев 👇\nhttps://t.me/kosmoscase/1407")
+        await update.message.reply_text("💳 Рассрочка от 6 до 36 месяцев:\nhttps://t.me/kosmoscase/1407")
     elif "ремонт" in text:
-        await update.message.reply_text("📱 Укажите модель и проблему.\nДля консультации: https://t.me/kosmoscas")
+        await update.message.reply_text("🔧 Напишите модель устройства и проблему.\nДля консультации: https://t.me/kosmoscas")
     else:
         for key, link in brand_links.items():
             if key in text:
@@ -43,8 +43,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 return
         await update.message.reply_text("🤖 Напишите бренд, 'рассрочка' или 'ремонт'.")
 
-app = ApplicationBuilder().token(TOKEN).build()
-app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
 if name == "__main__":
+    app = ApplicationBuilder().token(TOKEN).build()
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     app.run_polling()
