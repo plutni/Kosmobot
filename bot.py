@@ -1,12 +1,8 @@
-import logging, os
-from aiogram import Bot, Dispatcher, types
-from aiogram.utils import executor
+mport os
+from telegram import Update
+from telegram.ext import ApplicationBuilder, ContextTypes, MessageHandler, filters
 
-API_TOKEN = os.getenv("API_TOKEN")  # ← совпадает с Render переменной
-logging.basicConfig(level=logging.INFO)
-
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher(bot)
+TOKEN = os.getenv("API_TOKEN")
 
 brand_links = {
     "iphone": "https://t.me/Kosmoscaseprice/17",
@@ -33,25 +29,22 @@ brand_links = {
     "стик": "https://t.me/Kosmoscaseprice/53"
 }
 
-@dp.message_handler(lambda m: "рассрочка" in m.text.lower())
-async def inst(m: types.Message):
-    await m.reply("Рассрочка от 6 до 36 месяцев 👇\nhttps://t.me/kosmoscase/1407")
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text.lower()
 
-@dp.message_handler(lambda m: "ремонт" in m.text.lower())
-async def rep(m: types.Message):
-    await m.reply("📱 Укажите модель и проблему.\nДля консультации: https://t.me/kosmoscas")
+    if "рассрочка" in text:
+        await update.message.reply_text("Рассрочка от 6 до 36 месяцев 👇\nhttps://t.me/kosmoscase/1407")
+    elif "ремонт" in text:
+        await update.message.reply_text("📱 Укажите модель и проблему.\nДля консультации: https://t.me/kosmoscas")
+    else:
+        for key, link in brand_links.items():
+            if key in text:
+                await update.message.reply_text(f"📦 Актуальные предложения по «{key}»: {link}")
+                return
+        await update.message.reply_text("🤖 Напишите бренд, 'рассрочка' или 'ремонт'.")
 
-@dp.message_handler(lambda m: any(k in m.text.lower() for k in brand_links))
-async def brands(m: types.Message):
-    txt = m.text.lower()
-    for key, link in brand_links.items():
-        if key in txt:
-            await m.reply(f"📦 Актуальные предложения по «{key}»: {link}")
-            return
+app = ApplicationBuilder().token(TOKEN).build()
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-@dp.message_handler()
-async def fallback(m: types.Message):
-    await m.reply("🤖 Напишите бренд, 'рассрочка' или 'ремонт'.")
-
-if name == "__main__":  # ← исправлено!
-    executor.start_polling(dp, skip_updates=True)
+if name == "__main__":
+    app.run_polling()
